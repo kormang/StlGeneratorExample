@@ -4,6 +4,29 @@
 #include "helpers.h"
 #include "solid.h"
 
+void makeTetrahedron(const std::string& filename) {
+    std::ofstream out(filename);
+
+    if(!out) {
+        std::cerr << "Failed to open file!\n";
+        return;
+    }
+
+    Vertex3f v1(0.0f, 0.0f, 0.0f);
+    Vertex3f v2(1.0f, 0.0f, 0.0f);
+    Vertex3f v3(1.0f, 0.0f, 1.0f);
+    Vertex3f v4(1.0f, 1.0f, 0.0f);
+
+    out << "solid tetrahedron\n";
+
+    out << Trianglef(v1, v2, v3);
+    out << Trianglef(v1, v2, v4);
+    out << Trianglef(v2, v3, v4);
+    out << Trianglef(v3, v4, v1);
+
+    out << "endsolid\n";
+}
+
 class Cylinder : public Solid {
     int numSlices;
     float radius;
