@@ -1,3 +1,3 @@
 #pragma once
 
-void makeCilinder(const std::string& filename);
+void makeCylinder(const std::string& filename);

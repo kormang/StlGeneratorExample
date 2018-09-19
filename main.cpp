@@ -2,7 +2,7 @@
 #include "generator.h"
 
 int main(){
-    makeSolid();
+    makeCylinder("./cylinder.stl");
     std::cout << "Hello World" << std::endl;
     return 0;
 }
