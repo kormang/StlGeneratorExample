@@ -20,6 +20,7 @@ public:
 
     T dot(const Vector3<T>& b) const;
     Vector3<T> cross(const Vector3<T>& b) const;
+    static Vector3<T> fromSpherical(T longitude, T latitude, T radius);
 
     friend std::ostream& operator<<(std::ostream& out, const Vector3<T> v) {
         out << v.x << " " << v.y << " " << v.z;
@@ -67,8 +68,8 @@ T dot(const Vector3<T>& a, const Vector3<T>& b) {
 }
 
 template <typename T>
-T operator*(const Vector3<T>& a, const Vector3<T>& b) {
-    return a.dot(b);
+Vector3<T> operator*(const Vector3<T>& a, const Vector3<T>& b) {
+    return Vector3<T>(a.x * b.x, a.y * b.y, a.z * b.z);
 }
 
 template <typename T>
@@ -88,6 +89,15 @@ Vector3<T> Vector3<T>::cross(const Vector3<T>& b) const {
 template <typename T>
 Vector3<T> cross(const Vector3<T>& a, const Vector3<T>& b) {
     return a.cross(b);
+}
+
+template <typename T>
+Vector3<T> Vector3<T>::fromSpherical(T longitude, T latitude, T radius) {
+    const T z = radius * sin(latitude);
+    const T xyproj = radius * cos(latitude);
+    const T x = xyproj * cos(longitude);
+    const T y = xyproj * sin(longitude);
+    return Vector3<T>(x, y, z);
 }
 
 template <typename T>
