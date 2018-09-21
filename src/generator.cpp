@@ -41,6 +41,8 @@ void Cylinder::printTriangles(std::ostream& out) const
 {
     const float delta_a = 2 * M_PI / static_cast<float>(numSlices);
 
+    out << Trianglef::Split(2);
+
     Trianglef t(
         Vertex3f(0, 0, 0),
         Vertex3f(radius, 0, 0),
@@ -78,6 +80,8 @@ void Cylinder::printTriangles(std::ostream& out) const
             Vertex3f(cos(delta_a * (i+1))*radius, sin(delta_a * (i+1))*radius, 0)
         );
     }
+
+    out << Trianglef::Split(0);
 }
 
 void makeCylinder(const std::string& filename) {

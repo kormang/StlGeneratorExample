@@ -133,7 +133,7 @@ private:
     };
 
     Vector3<T> normal;
-
+    static unsigned int splitNTimes;
 public:
     Triangle(
         const Vertex3<T>& v1,
@@ -169,17 +169,48 @@ public:
     const Vertex3<T>& getV3() const { return v3; };
     const Vector3<T>& getNormal() const { return normal; };
 
-    friend std::ostream& operator<<(std::ostream& out, const Triangle<T>& triangle) {
-        out << "facet normal " << triangle.normal.x << " " << triangle.normal.y << " " << triangle.normal.z << std::endl;
-        out << "\touter loop\n";
-        for (int i = 0; i < 3; ++i) {
-        out << "\t\tvertex " << triangle.vertices[i] << std::endl;
+    void printVertices(std::ostream& out, int level) const {
+        if (level) {
+            Vertex3<T> sv1 = ((vertices[1] - vertices[0]) / 2.0f) + vertices[0];
+            Vertex3<T> sv2 = ((vertices[2] - vertices[0]) / 2.0f) + vertices[0];
+            Vertex3<T> sv3 = ((vertices[2] - vertices[1]) / 2.0f) + vertices[1];
+
+            Triangle<T> t1(vertices[0], sv1, sv2);
+            t1.printVertices(out, level - 1);
+            Triangle<T> t2(sv1, vertices[1], sv3);
+            t2.printVertices(out, level - 1);
+            Triangle<T> t3(sv2, sv3, vertices[2]);
+            t3.printVertices(out, level - 1);
+            Triangle<T> t4(sv1, sv3, sv2);
+            t4.printVertices(out, level - 1);
+        } else {
+            out << "facet normal " << normal.x << " " << normal.y << " " << normal.z << std::endl;
+            out << "\touter loop\n";
+            for (int i = 0; i < 3; ++i) {
+            out << "\t\tvertex " << vertices[i] << std::endl;
+            }
+            out << "\tendloop\n";
+            out << "endfacet\n";
         }
-        out << "\tendloop\n";
-        out << "endfacet\n";
+    }
+
+    friend std::ostream& operator<<(std::ostream& out, const Triangle<T>& triangle) {
+        triangle.printVertices(out, Triangle<T>::splitNTimes);
         return out;
     }
 
+    class Split {
+        unsigned int times;
+        public:
+            Split(unsigned int times):times(times) {}
+            friend std::ostream& operator<<(std::ostream& out, const Triangle<T>::Split& split) {
+                Triangle<T>::splitNTimes = split.times;
+                return out;
+            }
+    };
 };
+
+
+template <typename T> unsigned int Triangle<T>::splitNTimes = 0;
 
 typedef Triangle<float> Trianglef;
